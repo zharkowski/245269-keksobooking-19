@@ -1,26 +1,33 @@
 'use strict';
 
+var NEAR_PINS_AMOUNT = 8;
+
 var randomNumber = function (end, start) {
   if (start === undefined) {
     start = 0;
   }
-  return start + Math.floor(Math.random() * (end - start));
+  return Math.floor(start + Math.random() * (end + 1 - start));
 };
 
 var randomElement = function (array) {
-  return array[randomNumber(array.length)];
+  return array[randomNumber(array.length - 1)];
 };
 
 var offerTypes = ['palace', 'flat', 'house', 'bungalo'];
 var featuresEnum = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var checks = ['12:00', '13:00', '14:00'];
-var NEAR_PINS_AMOUNT = 8;
 
 function generatePins(amount) {
   var photos = [];
   var photosAmount = randomNumber(3, 1);
   for (var i = 0; i < photosAmount; i++) {
-    photos.push('http://o0.github.io/assets/images/tokyo/hotel' + i + '.jpg');
+    photos.push('http://o0.github.io/assets/images/tokyo/hotel' + (i + 1) + '.jpg');
+  }
+  var features = [];
+  for (i = 0; i < randomNumber(featuresEnum.length); i++) {
+    if (randomNumber(1, 0) === 1) {
+      features.push(featuresEnum[i]);
+    }
   }
 
   var pins = [];
@@ -36,9 +43,9 @@ function generatePins(amount) {
         'type': randomElement(offerTypes),
         'rooms': randomNumber(5, 1),
         'guests': randomNumber(10, 1),
-        'checkin': randomNumber(checks),
-        'checkout': randomNumber(checks),
-        'feature': randomElement(featuresEnum),
+        'checkin': randomElement(checks),
+        'checkout': randomElement(checks),
+        'features': features,
         'description': 'Описание предложения' + i,
         'photos': photos
       },
@@ -80,3 +87,61 @@ var renderPins = function (pinsArray) {
 };
 
 renderPins(pins);
+
+var mapElement = document.querySelector('.map');
+var mapFiltersContainer = mapElement.querySelector('.map__filters-container');
+var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
+
+var createPinCardElement = function (pinElement) {
+  var card = cardTemplate.cloneNode(true);
+
+  card.querySelector('.popup__title').textContent = pinElement.offer.title;
+  card.querySelector('.popup__text--address').textContent = pinElement.offer.address;
+  card.querySelector('.popup__text--price').textContent = pinElement.offer.price + '₽/ночь';
+  switch (pinElement.offer.type) {
+    case 'flat':
+      card.querySelector('.popup__type').textContent = 'Квартира';
+      break;
+    case 'bungalo':
+      card.querySelector('.popup__type').textContent = 'Бунгало';
+      break;
+    case 'house':
+      card.querySelector('.popup__type').textContent = 'Дом';
+      break;
+    case 'palace':
+      card.querySelector('.popup__type').textContent = 'Дворец';
+      break;
+  }
+  card.querySelector('.popup__text--capacity').textContent = pinElement.offer.rooms + ' комнаты для ' + pinElement.offer.guests + ' гостей';
+  card.querySelector('.popup__text--time').textContent = 'Заезд после ' + pinElement.offer.checkin + ', выезд до ' + pinElement.offer.checkout;
+  var featuresElements = card.querySelectorAll('.popup__feature');
+  for (var i = 0; i < featuresElements.length; i++) {
+    featuresElements[i].style.display = 'none';
+    for (var j = 0; j < pins[0].offer.features.length; j++) {
+      if (featuresElements[i].classList.contains('popup__feature--' + pins[0].offer.features[j])) {
+        featuresElements[i].style.display = 'inline-block';
+        break;
+      }
+    }
+  }
+  card.querySelector('.popup__description').textContent = pinElement.offer.description;
+
+  var photosListElement = card.querySelector('.popup__photos');
+  card.querySelector('.popup__photo').src = pinElement.offer.photos[0];
+  for (i = 1; i < pins[0].offer.photos.length; i++) {
+    var photo = card.querySelector('.popup__photo').cloneNode(true);
+    photo.src = pinElement.offer.photos[i];
+    photosListElement.appendChild(photo);
+  }
+
+  return card;
+};
+
+var renderCard = function (card) {
+  var fragment = document.createDocumentFragment();
+  fragment.appendChild(createPinCardElement(card));
+  mapElement.insertBefore(fragment, mapFiltersContainer);
+};
+
+renderCard(pins[0]);
+

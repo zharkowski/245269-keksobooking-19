@@ -11,14 +11,12 @@ var randomElement = function (array) {
   return array[randomNumber(array.length)];
 };
 
+var offerTypes = ['palace', 'flat', 'house', 'bungalo'];
+var featuresEnum = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+var checks = ['12:00', '13:00', '14:00'];
+var NEAR_PINS_AMOUNT = 8;
+
 function generatePins(amount) {
-  if (amount === undefined) {
-    amount = 8;
-  }
-
-  var offerTypes = ['palace', 'flat', 'house', 'bungalo'];
-  var featuresEnum = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-
   var photos = [];
   var photosAmount = randomNumber(3, 1);
   for (var i = 0; i < photosAmount; i++) {
@@ -38,9 +36,9 @@ function generatePins(amount) {
         'type': randomElement(offerTypes),
         'rooms': randomNumber(5, 1),
         'guests': randomNumber(10, 1),
-        'checkin': '1' + randomNumber(4, 2) + ':00',
-        'checkout': '1' + randomNumber(4, 2) + ':00',
-        'features': randomElement(featuresEnum),
+        'checkin': randomNumber(checks),
+        'checkout': randomNumber(checks),
+        'feature': randomElement(featuresEnum),
         'description': 'Описание предложения' + i,
         'photos': photos
       },
@@ -54,7 +52,7 @@ function generatePins(amount) {
   return pins;
 }
 
-var pins = generatePins();
+var pins = generatePins(NEAR_PINS_AMOUNT);
 
 var map = document.querySelector('.map');
 map.classList.remove('map--faded');
@@ -73,16 +71,12 @@ var createPinElement = function (pinElement) {
   return pin;
 };
 
-var createPinsList = function (pinsArray) {
+var renderPins = function (pinsArray) {
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < pinsArray.length; i++) {
     fragment.appendChild(createPinElement(pinsArray[i]));
   }
-  return fragment;
-};
-
-var renderPins = function (pinsElementsList) {
-  pinList.appendChild(createPinsList(pinsElementsList));
+  pinList.appendChild(fragment);
 };
 
 renderPins(pins);

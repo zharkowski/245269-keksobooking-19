@@ -124,14 +124,20 @@ var renderFeatures = function (card, pinElement) {
   }
 };
 
-var renderPhotos = function (card, pinElement) {
-  var photosListElement = card.querySelector('.popup__photos');
-  card.querySelector('.popup__photo').src = pinElement.offer.photos[0];
+var createPhotos = function (card, pinElement) {
+  var fragment = document.createDocumentFragment();
   for (var i = 1; i < pins[0].offer.photos.length; i++) {
     var photo = card.querySelector('.popup__photo').cloneNode(true);
     photo.src = pinElement.offer.photos[i];
-    photosListElement.appendChild(photo);
+    fragment.appendChild(photo);
   }
+  return fragment;
+};
+
+var renderPhotos = function (card, pinElement) {
+  card.querySelector('.popup__photo').src = pinElement.offer.photos[0];
+  var photosListElement = card.querySelector('.popup__photos');
+  photosListElement.appendChild(createPhotos(card, pinElement));
 };
 
 var renderCard = function (card) {
@@ -141,4 +147,3 @@ var renderCard = function (card) {
 };
 
 renderCard(pins[0]);
-

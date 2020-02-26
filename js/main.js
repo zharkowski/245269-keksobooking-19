@@ -1,6 +1,8 @@
 'use strict';
 
 var NEAR_PINS_AMOUNT = 8;
+var PIN_WIDTH = 60;
+var PIN_HEIGHT = 80;
 
 var randomNumber = function (end, start) {
   if (start === undefined) {
@@ -67,8 +69,51 @@ function generatePins(amount) {
 
 var pins = generatePins(NEAR_PINS_AMOUNT);
 
-var map = document.querySelector('.map');
-map.classList.remove('map--faded');
+var addressInput = document.querySelector('input[name=address]');
+var setAddressCoordinates = function (xCoord, yCoord) {
+  xCoord = String(xCoord).replace('px', '');
+  xCoord = +xCoord + PIN_WIDTH / 2;
+  yCoord = String(yCoord).replace('px', '');
+  yCoord = +yCoord + PIN_HEIGHT;
+  addressInput.setAttribute('value', xCoord + ', ' + yCoord);
+};
+
+var adForm = document.querySelector('.ad-form');
+adForm.classList.add('ad-form--disabled');
+var fieldsets = document.querySelectorAll('fieldset');
+for (var i = 0; i < fieldsets.length; i++) {
+  fieldsets[i].setAttribute('disabled', '');
+}
+var filtersForm = document.querySelector('.map__filters');
+filtersForm.setAttribute('disabled', '');
+var pinMain = document.querySelector('.map__pin--main');
+
+var activatePageHandler = function () {
+  var map = document.querySelector('.map');
+  map.classList.remove('map--faded');
+  setAddressCoordinates(pinMain.style.left, pinMain.style.top);
+  for (i = 0; i < fieldsets.length; i++) {
+    fieldsets[i].removeAttribute('disabled');
+  }
+  filtersForm.removeAttribute('disabled');
+  renderPins(pins);
+  renderCard(pins[0]);
+};
+
+// центром метки по оси Y относительно остного конца будет - координата острого конца минус высота метки плюс радиус круглой метки (половина ширины)
+setAddressCoordinates(pinMain.style.left, pinMain.style.top.replace('px', '') - (PIN_HEIGHT - PIN_WIDTH / 2));
+
+pinMain.addEventListener('mousedown', function (evt) {
+  if (evt.button === 0) {
+    activatePageHandler();
+  }
+});
+
+pinMain.addEventListener('keydown', function (evt) {
+  if (evt.key === 'Enter') {
+    activatePageHandler();
+  }
+});
 
 var pinList = document.querySelector('.map__pins');
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
@@ -86,13 +131,11 @@ var createPinElement = function (pinElement) {
 
 var renderPins = function (pinsArray) {
   var fragment = document.createDocumentFragment();
-  for (var i = 0; i < pinsArray.length; i++) {
+  for (i = 0; i < pinsArray.length; i++) {
     fragment.appendChild(createPinElement(pinsArray[i]));
   }
   pinList.appendChild(fragment);
 };
-
-renderPins(pins);
 
 var mapElement = document.querySelector('.map');
 var mapFiltersContainer = mapElement.querySelector('.map__filters-container');
@@ -116,7 +159,7 @@ var createPinCardElement = function (pinElement) {
 
 var renderFeatures = function (card, pinElement) {
   var featuresElements = card.querySelectorAll('.popup__feature');
-  for (var i = 0; i < featuresElements.length; i++) {
+  for (i = 0; i < featuresElements.length; i++) {
     featuresElements[i].style.display = 'none';
   }
   for (i = 0; i < pinElement.offer.features.length; i++) {
@@ -126,7 +169,7 @@ var renderFeatures = function (card, pinElement) {
 
 var createPhotos = function (card, pinElement) {
   var fragment = document.createDocumentFragment();
-  for (var i = 1; i < pins[0].offer.photos.length; i++) {
+  for (i = 1; i < pins[0].offer.photos.length; i++) {
     var photo = card.querySelector('.popup__photo').cloneNode(true);
     photo.src = pinElement.offer.photos[i];
     fragment.appendChild(photo);
@@ -146,4 +189,22 @@ var renderCard = function (card) {
   mapElement.insertBefore(fragment, mapFiltersContainer);
 };
 
-renderCard(pins[0]);
+var rooms = document.querySelector('select[name=rooms]');
+var capacity = document.querySelector('select[name=capacity]');
+
+var setSelectValidity = function () {
+  rooms.setCustomValidity('');
+  capacity.setCustomValidity('');
+  if (+rooms.value < +capacity.value) {
+    rooms.setCustomValidity('Количесвто комнат не может быть меньше количства гостей');
+    capacity.setCustomValidity('Количесвто комнат не может быть меньше количства гостей');
+  }
+};
+
+rooms.addEventListener('change', function () {
+  setSelectValidity();
+});
+
+capacity.addEventListener('change', function () {
+  setSelectValidity();
+});

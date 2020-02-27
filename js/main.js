@@ -28,24 +28,24 @@ var offerTypeMap = {
 function generatePins(amount) {
   var photos = [];
   var photosAmount = randomNumber(3, 1);
-  for (var i = 0; i < photosAmount; i++) {
-    photos.push('http://o0.github.io/assets/images/tokyo/hotel' + (i + 1) + '.jpg');
+  for (var j = 0; j < photosAmount; j++) {
+    photos.push('http://o0.github.io/assets/images/tokyo/hotel' + (j + 1) + '.jpg');
   }
   var features = [];
-  for (i = 0; i < randomNumber(featuresEnum.length); i++) {
+  for (var k = 0; k < randomNumber(featuresEnum.length); k++) {
     if (randomNumber(1, 0) === 1) {
-      features.push(featuresEnum[i]);
+      features.push(featuresEnum[k]);
     }
   }
 
   var pins = [];
-  for (i = 0; i < amount; i++) {
+  for (var n = 0; n < amount; n++) {
     var pin = {
       'author': {
-        'avatar': 'img/avatars/user0' + (i + 1) + '.png',
+        'avatar': 'img/avatars/user0' + (n + 1) + '.png',
       },
       'offer': {
-        'title': 'Предложение ' + i,
+        'title': 'Предложение ' + n,
         'address': randomNumber(500, 0) + ', ' + randomNumber(630, 130),
         'price': randomNumber(10, 1) * 1000,
         'type': randomElement(offerTypes),
@@ -54,7 +54,7 @@ function generatePins(amount) {
         'checkin': randomElement(checks),
         'checkout': randomElement(checks),
         'features': features,
-        'description': 'Описание предложения' + i,
+        'description': 'Описание предложения' + n,
         'photos': photos
       },
       'location': {
@@ -81,23 +81,43 @@ var setAddressCoordinates = function (xCoord, yCoord) {
 var adForm = document.querySelector('.ad-form');
 adForm.classList.add('ad-form--disabled');
 var fieldsets = document.querySelectorAll('fieldset');
-for (var i = 0; i < fieldsets.length; i++) {
-  fieldsets[i].setAttribute('disabled', '');
+for (var k = 0; k < fieldsets.length; k++) {
+  fieldsets[k].setAttribute('disabled', '');
 }
 var filtersForm = document.querySelector('.map__filters');
 filtersForm.setAttribute('disabled', '');
 var pinMain = document.querySelector('.map__pin--main');
 
+var formsEnableHandler = function () {
+  for (var l = 0; l < fieldsets.length; l++) {
+    fieldsets[l].removeAttribute('disabled');
+  }
+  filtersForm.removeAttribute('disabled');
+  adForm.classList.remove('ad-form--disabled');
+};
+
+// var formsDisableHadler = function () {
+//   for (i = 0; i < fieldsets.length; i++) {
+//     fieldsets[i].setAttribute('disabled', '');
+//   }
+//   filtersForm.setAttribute('disabled', '');
+// };
+
+// var formsToggle = function () {
+//   if (fieldsets[i].disabled) {
+//     formsEnableHadler();
+//   } else {
+//     formsDisableHandler();
+//   }
+// };
+
 var activatePageHandler = function () {
   var map = document.querySelector('.map');
   map.classList.remove('map--faded');
   setAddressCoordinates(pinMain.style.left, pinMain.style.top);
-  for (i = 0; i < fieldsets.length; i++) {
-    fieldsets[i].removeAttribute('disabled');
-  }
-  filtersForm.removeAttribute('disabled');
+  formsEnableHandler();
   renderPins(pins);
-  renderCard(pins[0]);
+  // renderCard(pins[0]);
 };
 
 // центром метки по оси Y относительно остного конца будет - координата острого конца минус высота метки плюс радиус круглой метки (половина ширины)
@@ -131,7 +151,7 @@ var createPinElement = function (pinElement) {
 
 var renderPins = function (pinsArray) {
   var fragment = document.createDocumentFragment();
-  for (i = 0; i < pinsArray.length; i++) {
+  for (var i = 0; i < pinsArray.length; i++) {
     fragment.appendChild(createPinElement(pinsArray[i]));
   }
   pinList.appendChild(fragment);
@@ -159,17 +179,17 @@ var createPinCardElement = function (pinElement) {
 
 var renderFeatures = function (card, pinElement) {
   var featuresElements = card.querySelectorAll('.popup__feature');
-  for (i = 0; i < featuresElements.length; i++) {
+  for (var i = 0; i < featuresElements.length; i++) {
     featuresElements[i].style.display = 'none';
   }
-  for (i = 0; i < pinElement.offer.features.length; i++) {
-    card.querySelector('.popup__feature--' + pinElement.offer.features[i]).style.display = 'inline-block';
+  for (var j = 0; j < pinElement.offer.features.length; j++) {
+    card.querySelector('.popup__feature--' + pinElement.offer.features[j]).style.display = 'inline-block';
   }
 };
 
 var createPhotos = function (card, pinElement) {
   var fragment = document.createDocumentFragment();
-  for (i = 1; i < pins[0].offer.photos.length; i++) {
+  for (var i = 1; i < pins[0].offer.photos.length; i++) {
     var photo = card.querySelector('.popup__photo').cloneNode(true);
     photo.src = pinElement.offer.photos[i];
     fragment.appendChild(photo);
@@ -198,6 +218,10 @@ var setSelectValidity = function () {
   if (+rooms.value < +capacity.value) {
     rooms.setCustomValidity('Количесвто комнат не может быть меньше количства гостей');
     capacity.setCustomValidity('Количесвто комнат не может быть меньше количства гостей');
+  }
+  if ((+rooms.value === 100 && +capacity.value !== 0) || (+rooms.value !== 100 && +capacity.value === 0)) {
+    rooms.setCustomValidity('Данное количество комнат не предназначено для гостей');
+    capacity.setCustomValidity('Данное количество комнат не предназначено для гостей');
   }
 };
 

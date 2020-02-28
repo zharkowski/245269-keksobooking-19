@@ -24,6 +24,12 @@ var offerTypeMap = {
   'house': 'Дом',
   'bungalo': 'Бунгало'
 };
+var minPriceMap = {
+  'palace': 10000,
+  'flat': 1000,
+  'house': 5000,
+  'bungalo': 0
+};
 
 function generatePins(amount) {
   var photos = [];
@@ -117,7 +123,6 @@ var activatePageHandler = function () {
   setAddressCoordinates(pinMain.style.left, pinMain.style.top);
   formsEnableHandler();
   renderPins(pins);
-  // renderCard(pins[0]);
 };
 
 // центром метки по оси Y относительно остного конца будет - координата острого конца минус высота метки плюс радиус круглой метки (половина ширины)
@@ -145,6 +150,14 @@ var createPinElement = function (pinElement) {
   pin.style.top = pinElement.location.y - 35 + 'px';
   pin.querySelector('img').src = pinElement.author.avatar;
   pin.querySelector('img').alt = pinElement.offer.title;
+  pin.addEventListener('click', function () {
+    renderCard(pinElement);
+  });
+  pin.addEventListener('keydown', function (evt) {
+    if (evt.key === 'Enter') {
+      renderCard(pinElement);
+    }
+  });
 
   return pin;
 };
@@ -164,6 +177,7 @@ var cardTemplate = document.querySelector('#card').content.querySelector('.map__
 var createPinCardElement = function (pinElement) {
   var card = cardTemplate.cloneNode(true);
 
+  card.querySelector('.popup__avatar').src = pinElement.author.avatar;
   card.querySelector('.popup__title').textContent = pinElement.offer.title;
   card.querySelector('.popup__text--address').textContent = pinElement.offer.address;
   card.querySelector('.popup__text--price').textContent = pinElement.offer.price + '₽/ночь';
@@ -173,6 +187,16 @@ var createPinCardElement = function (pinElement) {
   renderFeatures(card, pinElement);
   card.querySelector('.popup__description').textContent = pinElement.offer.description;
   renderPhotos(card, pinElement);
+
+  var closeButton = card.querySelector('.popup__close');
+  closeButton.addEventListener('click', function () {
+    card.remove();
+  });
+  document.addEventListener('keydown', function (evt) {
+    if (evt.key === 'Escape') {
+      card.remove();
+    }
+  });
 
   return card;
 };
@@ -204,6 +228,10 @@ var renderPhotos = function (card, pinElement) {
 };
 
 var renderCard = function (card) {
+  var currentCard = mapElement.querySelector('.map__card');
+  if (currentCard) {
+    currentCard.remove();
+  }
   var fragment = document.createDocumentFragment();
   fragment.appendChild(createPinCardElement(card));
   mapElement.insertBefore(fragment, mapFiltersContainer);
@@ -212,7 +240,7 @@ var renderCard = function (card) {
 var rooms = document.querySelector('select[name=rooms]');
 var capacity = document.querySelector('select[name=capacity]');
 
-var setSelectValidity = function () {
+var setRoomsAndCapacityValidity = function () {
   rooms.setCustomValidity('');
   capacity.setCustomValidity('');
   if (+rooms.value < +capacity.value) {
@@ -226,9 +254,41 @@ var setSelectValidity = function () {
 };
 
 rooms.addEventListener('change', function () {
-  setSelectValidity();
+  setRoomsAndCapacityValidity();
+});
+capacity.addEventListener('change', function () {
+  setRoomsAndCapacityValidity();
 });
 
-capacity.addEventListener('change', function () {
-  setSelectValidity();
+var type = document.querySelector('select[name=type]');
+var price = document.querySelector('input[name=price]');
+
+var setPriceValidity = function (offerType) {
+  price.setCustomValidity('');
+  var minPrice = minPriceMap[offerType];
+  if (price.value < minPrice) {
+    price.setCustomValidity('Цена для жилья типа "' + offerTypeMap[offerType] + '" не можеть быть меньше ' + minPrice + ' рублей');
+  }
+  if (price.value > 1000000) {
+    price.setCustomValidity('Цена для жилья не можеть быть больше 1 000 000 рублей');
+  }
+};
+
+type.addEventListener('change', function () {
+  setPriceValidity(type.value);
+});
+
+price.addEventListener('change', function () {
+  setPriceValidity(type.value);
+});
+
+var timein = document.querySelector('select[name=timein]');
+var timeout = document.querySelector('select[name=timeout]');
+
+timein.addEventListener('change', function () {
+  timeout.value = timein.value;
+});
+
+timeout.addEventListener('change', function () {
+  timein.value = timeout.value;
 });

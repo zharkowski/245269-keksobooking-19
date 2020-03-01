@@ -3,6 +3,9 @@
 var NEAR_PINS_AMOUNT = 8;
 var PIN_WIDTH = 60;
 var PIN_HEIGHT = 80;
+var ENTER_KEY = 'Enter';
+var ESCAPE_KEY = 'Escape';
+var MAX_PRICE = 1000000;
 
 var randomNumber = function (end, start) {
   if (start === undefined) {
@@ -135,7 +138,7 @@ pinMain.addEventListener('mousedown', function (evt) {
 });
 
 pinMain.addEventListener('keydown', function (evt) {
-  if (evt.key === 'Enter') {
+  if (evt.key === ENTER_KEY) {
     activatePageHandler();
   }
 });
@@ -154,7 +157,7 @@ var createPinElement = function (pinElement) {
     renderCard(pinElement);
   });
   pin.addEventListener('keydown', function (evt) {
-    if (evt.key === 'Enter') {
+    if (evt.key === ENTER_KEY) {
       renderCard(pinElement);
     }
   });
@@ -193,7 +196,7 @@ var createPinCardElement = function (pinElement) {
     card.remove();
   });
   document.addEventListener('keydown', function (evt) {
-    if (evt.key === 'Escape') {
+    if (evt.key === ESCAPE_KEY) {
       card.remove();
     }
   });
@@ -269,7 +272,7 @@ var setPriceValidity = function (offerType) {
   if (price.value < minPrice) {
     price.setCustomValidity('Цена для жилья типа "' + offerTypeMap[offerType] + '" не можеть быть меньше ' + minPrice + ' рублей');
   }
-  if (price.value > 1000000) {
+  if (price.value > MAX_PRICE) {
     price.setCustomValidity('Цена для жилья не можеть быть больше 1 000 000 рублей');
   }
 };

@@ -269,6 +269,7 @@ var price = document.querySelector('input[name=price]');
 var setPriceValidity = function (offerType) {
   price.setCustomValidity('');
   var minPrice = minPriceMap[offerType];
+  price.placeholder = minPrice;
   if (price.value < minPrice) {
     price.setCustomValidity('Цена для жилья типа "' + offerTypeMap[offerType] + '" не можеть быть меньше ' + minPrice + ' рублей');
   }

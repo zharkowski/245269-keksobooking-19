@@ -1,17 +1,18 @@
 'use strict';
 
 (function () {
-  var PIN_WIDTH = 60;
+  var pinMain = document.querySelector('.map__pin--main');
+
+  var PIN_WIDTH = pinMain.offsetWidth;
   var PIN_HEIGHT = 80;
   var MAX_PRICE = 1000000;
 
-  var pinMain = document.querySelector('.map__pin--main');
   var addressInput = document.querySelector('input[name=address]');
   var setAddressCoordinates = function (xCoord, yCoord) {
     xCoord = String(xCoord).replace('px', '');
-    xCoord = +xCoord + PIN_WIDTH / 2;
+    xCoord = Math.round(+xCoord + PIN_WIDTH / 2);
     yCoord = String(yCoord).replace('px', '');
-    yCoord = +yCoord + PIN_HEIGHT;
+    yCoord = Math.round(+yCoord + PIN_HEIGHT);
     addressInput.setAttribute('value', xCoord + ', ' + yCoord);
   };
 
@@ -76,6 +77,8 @@
   });
 
   window.form = {
-    setAddressCoordinates: setAddressCoordinates
+    setAddressCoordinates: setAddressCoordinates,
+    PIN_WIDTH: PIN_WIDTH,
+    PIN_HEIGHT: PIN_HEIGHT
   };
 })();

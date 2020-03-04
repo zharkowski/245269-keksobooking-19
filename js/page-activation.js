@@ -1,6 +1,9 @@
 'use strict';
 
 (function () {
+  var TOP_COORDS_LIMIT = 130;
+  var BOTTOM_COORDS_LIMIT = 630;
+  var map = document.querySelector('.map');
   var adForm = document.querySelector('.ad-form');
   adForm.classList.add('ad-form--disabled');
   var fieldsets = document.querySelectorAll('fieldset');
@@ -34,12 +37,49 @@
   //   }
   // };
 
+  var pinDragAndDropHandler = function (evt) {
+    var startCoords = {
+      x: evt.clientX,
+      y: evt.clientY
+    };
+
+    var pinMouseMoveHandler = function (moveEvt) {
+      var shift = {
+        x: startCoords.x - moveEvt.clientX,
+        y: startCoords.y - moveEvt.clientY
+      };
+
+      if (pinMain.style.top.replace('px', '') - shift.y >= TOP_COORDS_LIMIT - window.form.PIN_HEIGHT
+        && pinMain.style.top.replace('px', '') - shift.y <= BOTTOM_COORDS_LIMIT - window.form.PIN_HEIGHT
+        && pinMain.style.left.replace('px', '') - shift.x >= -window.form.PIN_WIDTH / 2
+        && pinMain.style.left.replace('px', '') - shift.x <= map.offsetWidth - window.form.PIN_WIDTH / 2) {
+
+        startCoords = {
+          x: moveEvt.clientX,
+          y: moveEvt.clientY
+        };
+
+        pinMain.style.top = (pinMain.offsetTop - shift.y) + 'px';
+        pinMain.style.left = (pinMain.offsetLeft - shift.x) + 'px';
+        window.form.setAddressCoordinates(pinMain.style.left, pinMain.style.top);
+      }
+    };
+
+    var pinMouseUpHandler = function () {
+      map.removeEventListener('mousemove', pinMouseMoveHandler);
+      map.removeEventListener('mouseup', pinMouseUpHandler);
+    };
+
+    map.addEventListener('mousemove', pinMouseMoveHandler);
+    map.addEventListener('mouseup', pinMouseUpHandler);
+  };
+
   var activatePageHandler = function () {
-    var map = document.querySelector('.map');
     map.classList.remove('map--faded');
     window.form.setAddressCoordinates(pinMain.style.left, pinMain.style.top);
     formsEnableHandler();
     window.map.renderPins(window.pin.pins);
+    pinMain.addEventListener('mousedown', pinDragAndDropHandler);
   };
 
   pinMain.addEventListener('mousedown', function (evt) {

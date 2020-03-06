@@ -3,7 +3,7 @@
 (function () {
   var createPhotos = function (card, pinElement) {
     var fragment = document.createDocumentFragment();
-    for (var i = 1; i < window.pin.pins[0].offer.photos.length; i++) {
+    for (var i = 1; i < pinElement.offer.photos.length; i++) {
       var photo = card.querySelector('.popup__photo').cloneNode(true);
       photo.src = pinElement.offer.photos[i];
       fragment.appendChild(photo);

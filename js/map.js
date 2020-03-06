@@ -1,12 +1,14 @@
 'use strict';
 
 (function () {
+  var NEAR_PINS_AMOUNT = 8;
+
   var pinList = document.querySelector('.map__pins');
 
   var renderPins = function (pinsArray) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < pinsArray.length; i++) {
-      fragment.appendChild(window.pin.createPinElement(pinsArray[i]));
+    for (var i = 0; i < NEAR_PINS_AMOUNT; i++) {
+      fragment.appendChild(window.pin.createPinElement(window.utils.randomElement(pinsArray)));
     }
     pinList.appendChild(fragment);
   };

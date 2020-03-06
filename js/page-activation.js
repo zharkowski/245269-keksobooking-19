@@ -78,7 +78,7 @@
     map.classList.remove('map--faded');
     window.form.setAddressCoordinates(pinMain.style.left, pinMain.style.top);
     formsEnableHandler();
-    window.map.renderPins(window.pin.pins);
+    window.backend.load(window.map.renderPins, window.backend.commonErrorHandler);
     pinMain.addEventListener('mousedown', pinDragAndDropHandler);
   };
 

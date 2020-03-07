@@ -15,10 +15,22 @@
     return array[randomNumber(array.length - 1)];
   };
 
+  var randomUniqueSubArray = function (array, amount) {
+    var subArray = [];
+    while (subArray.length !== amount) {
+      var item = randomElement(array);
+      if (!subArray.includes(item)) {
+        subArray.push(item);
+      }
+    }
+    return subArray;
+  };
+
   window.utils = {
     ENTER_KEY: ENTER_KEY,
     ESCAPE_KEY: ESCAPE_KEY,
     randomNumber: randomNumber,
-    randomElement: randomElement
+    randomElement: randomElement,
+    randomUniqueSubArray: randomUniqueSubArray
   };
 })();

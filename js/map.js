@@ -7,12 +7,9 @@
 
   var renderPins = function (pinsArray) {
     var fragment = document.createDocumentFragment();
-
-    var pinsNearArray = window.utils.randomUniqueSubArray(pinsArray, NEAR_PINS_AMOUNT);
-    for (var i = 0; i < pinsNearArray.length; i++) {
-      fragment.appendChild(window.pin.createPinElement(pinsNearArray[i]));
+    for (var i = 0; i < NEAR_PINS_AMOUNT; i++) {
+      fragment.appendChild(window.pin.createPinElement(window.utils.randomElement(pinsArray)));
     }
-
     pinList.appendChild(fragment);
   };
 

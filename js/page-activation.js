@@ -80,14 +80,17 @@
     map.addEventListener('mouseup', pinMouseUpHandler);
   };
 
-  var activatePageHandler = function () {
+  var loadSuccessHandler = function (pins) {
+    window.map.renderPins(pins);
     map.classList.remove('map--faded');
     window.form.setAddressCoordinates(pinMain.style.left, pinMain.style.top);
     formsEnableHandler();
-    window.backend.load(window.map.renderPins, window.backend.commonErrorHandler);
-    pinMain.addEventListener('mousedown', pinDragAndDropHandler);
     pinMain.removeEventListener('mousedown', mouseDownHandler);
     pinMain.removeEventListener('keydown', keyDownHandler);
+  };
+
+  var activatePageHandler = function () {
+    window.backend.load(loadSuccessHandler, window.backend.commonErrorHandler);
   };
 
   var deactivatePageHandler = function () {
@@ -118,6 +121,7 @@
     }
   };
 
+  pinMain.addEventListener('mousedown', pinDragAndDropHandler);
   pinMain.addEventListener('mousedown', mouseDownHandler);
   pinMain.addEventListener('keydown', keyDownHandler);
 

@@ -61,6 +61,15 @@
       }
     });
 
+    xhr.addEventListener('error', function () {
+      errorHandler();
+    });
+
+    xhr.timeout = 10000;
+    xhr.addEventListener('timeout', function () {
+      errorHandler();
+    });
+
     xhr.send(data);
   };
 

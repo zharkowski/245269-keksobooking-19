@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var NEAR_PINS_AMOUNT = 8;
+  var NEAR_PINS_AMOUNT = 5;
 
   var pinList = document.querySelector('.map__pins');
 

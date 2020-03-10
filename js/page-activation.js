@@ -80,8 +80,9 @@
     map.addEventListener('mouseup', pinMouseUpHandler);
   };
 
-  var loadSuccessHandler = function (pins) {
-    window.map.renderPins(pins);
+  var loadSuccessHandler = function (data) {
+    window.pins = data;
+    window.map.renderPins();
     map.classList.remove('map--faded');
     window.form.setAddressCoordinates(pinMain.style.left, pinMain.style.top);
     formsEnableHandler();
@@ -94,12 +95,7 @@
   };
 
   var deactivatePageHandler = function () {
-    var pins = document.querySelectorAll('.map__pin');
-    for (var i = 0; i < pins.length; i++) {
-      if (!pins[i].classList.contains('map__pin--main')) {
-        pins[i].remove();
-      }
-    }
+    window.map.removePins();
     pinMain.style.left = ORIGINAL_MAIN_PIN_X + 'px';
     pinMain.style.top = ORIGINAL_MAIN_PIN_Y + 'px';
     map.classList.add('map--faded');

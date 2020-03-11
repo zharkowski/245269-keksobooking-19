@@ -17,6 +17,9 @@
 
   var randomUniqueSubArray = function (array, amount) {
     var subArray = [];
+    if (array.length <= amount) {
+      return array;
+    }
     while (subArray.length !== amount) {
       var item = randomElement(array);
       if (!subArray.includes(item)) {

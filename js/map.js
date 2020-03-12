@@ -27,41 +27,95 @@
 
     var currentPins = window.pins;
     currentPins = currentPins.
-    filter(function (item) {
-      return housingType.value === 'any' ? true : item.offer.type === housingType.value;
-    }).
-    filter(function (item) {
-      var priceFilter = housingPrice.value;
-      var price = item.offer.price;
-      switch (priceFilter) {
-        case 'any':
-          return true;
-        case 'middle':
-          return price > LOW_PRICE && price < HIGH_PRICE;
-        case 'low':
-          return price < LOW_PRICE;
-        case 'high':
-          return price > HIGH_PRICE;
-        default:
+    // filter(function (item) {
+    //   return housingType.value === 'any' ? true : item.offer.type === housingType.value;
+    // }).
+    // filter(function (item) {
+    //   var priceFilter = housingPrice.value;
+    //   var price = item.offer.price;
+    //   switch (priceFilter) {
+    //     case 'any':
+    //       return true;
+    //     case 'middle':
+    //       return price > LOW_PRICE && price < HIGH_PRICE;
+    //     case 'low':
+    //       return price < LOW_PRICE;
+    //     case 'high':
+    //       return price > HIGH_PRICE;
+    //     default:
+    //       return false;
+    //   }
+    // }).
+    // filter(function (item) {
+    //   return housingRooms.value === 'any' ? true : item.offer.rooms === +housingRooms.value;
+    // }).
+    // filter(function (item) {
+    //   return housingGuests.value === 'any' ? true : item.offer.guests === +housingGuests.value;
+    // }).
+    // filter(function (item) {
+    //   var housingFeaturesChecked = document.querySelectorAll('.map__checkbox:checked');
+    //   var hasCheckedFeatures = true;
+    //   housingFeaturesChecked.forEach(function (node) {
+    //     if (!item.offer.features.includes(node.value)) {
+    //       hasCheckedFeatures = false;
+    //       return;
+    //     }
+    //   });
+    //   return hasCheckedFeatures;
+      filter(function (item) {
+        var isFiltered = true;
+        if (housingType.value !== 'any' && item.offer.type !== housingType.value) {
           return false;
-      }
-    }).
-    filter(function (item) {
-      return housingRooms.value === 'any' ? true : item.offer.rooms === +housingRooms.value;
-    }).
-    filter(function (item) {
-      return housingGuests.value === 'any' ? true : item.offer.guests === +housingGuests.value;
-    }).
-    filter(function (item) {
-      var housingFeaturesChecked = document.querySelectorAll('.map__checkbox:checked');
-      var hasCheckedFeatures = true;
-      housingFeaturesChecked.forEach(function (node) {
-        if (!item.offer.features.includes(node.value)) {
-          hasCheckedFeatures = false;
-          return;
         }
-      });
-      return hasCheckedFeatures;
+        var priceFilter = housingPrice.value;
+        var price = item.offer.price;
+        switch (priceFilter) {
+          case 'any':
+            break;
+          case 'middle':
+            if (price < LOW_PRICE || price > HIGH_PRICE) {
+              return false;
+            }
+            break;
+          case 'low':
+            if (price > LOW_PRICE) {
+              return false;
+            }
+            break;
+          case 'high':
+            if (price < HIGH_PRICE) {
+              return false;
+            }
+            break;
+          default:
+            return false;
+        }
+        if (housingRooms.value !== 'any' && item.offer.rooms !== +housingRooms.value) {
+          return false;
+        }
+        if (housingGuests.value !== 'any' && item.offer.guests !== +housingGuests.value) {
+          return false;
+        }
+        var housingFeaturesChecked = document.querySelectorAll('.map__checkbox:checked');
+        var hasCheckedFeatures = true;
+        housingFeaturesChecked.forEach(function (node) {
+          if (!item.offer.features.includes(node.value)) {
+            hasCheckedFeatures = false;
+            return;
+          }
+        });
+        return hasCheckedFeatures;
+      }).
+      filter(function (item) {
+        var housingFeaturesChecked = document.querySelectorAll('.map__checkbox:checked');
+        var hasCheckedFeatures = true;
+        housingFeaturesChecked.forEach(function (node) {
+          if (!item.offer.features.includes(node.value)) {
+            hasCheckedFeatures = false;
+            return;
+          }
+        });
+        return hasCheckedFeatures;
     });
 
     var pinsNearArray = window.utils.randomUniqueSubArray(currentPins, NEAR_PINS_AMOUNT);

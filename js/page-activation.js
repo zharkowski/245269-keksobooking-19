@@ -96,6 +96,7 @@
 
   var deactivatePageHandler = function () {
     window.map.removePins();
+    window.map.removeCard();
     pinMain.style.left = ORIGINAL_MAIN_PIN_X + 'px';
     pinMain.style.top = ORIGINAL_MAIN_PIN_Y + 'px';
     map.classList.add('map--faded');

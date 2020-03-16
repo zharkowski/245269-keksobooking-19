@@ -15,6 +15,47 @@
   var price = document.querySelector('input[name=price]');
   var timein = document.querySelector('select[name=timein]');
   var timeout = document.querySelector('select[name=timeout]');
+  var avatar = form.querySelector('.ad-form-header__preview img');
+  var avatarInput = form.querySelector('.ad-form__field input');
+  var adPhotoInput = form.querySelector('.ad-form__input');
+
+  var uploadPhotoHandler = function (inputElement, imgElement) {
+    var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+    var file = inputElement.files[0];
+    var fileName = file.name.toLowerCase();
+
+    var matches = FILE_TYPES.some(function (it) {
+      return fileName.endsWith(it);
+    });
+
+    if (matches) {
+      var reader = new FileReader();
+
+      reader.addEventListener('load', function () {
+        imgElement.src = reader.result;
+      });
+
+      reader.readAsDataURL(file);
+    }
+  };
+
+  avatarInput.addEventListener('change', function () {
+    uploadPhotoHandler(avatarInput, avatar);
+  });
+
+  adPhotoInput.addEventListener('change', function () {
+    var adPhoto = form.querySelector('.ad-form__photo img');
+    if (!adPhoto) {
+      var img = document.createElement('img');
+      img.src = '';
+      img.alt = 'Фотография жилья';
+      img.style.width = '100%';
+      img.style.height = '100%';
+      form.querySelector('.ad-form__photo').appendChild(img);
+      adPhoto = form.querySelector('.ad-form__photo img');
+    }
+    uploadPhotoHandler(adPhotoInput, adPhoto);
+  });
 
   var addressInput = document.querySelector('input[name=address]');
   var setAddressCoordinates = function (xCoord, yCoord) {

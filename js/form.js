@@ -7,6 +7,7 @@
   var PIN_HEIGHT = 80;
   var MAX_PRICE = 1000000;
 
+  var filtersForm = document.querySelector('.map__filters');
   var form = document.querySelector('.ad-form');
   var resetButton = document.querySelector('.ad-form__reset');
   var rooms = document.querySelector('select[name=rooms]');
@@ -157,6 +158,8 @@
 
   resetButton.addEventListener('click', function () {
     form.reset();
+    filtersForm.reset();
+    window.pageActivation.deactivatePageHandler();
   });
 
 

@@ -4,24 +4,24 @@
   var ENTER_KEY = 'Enter';
   var ESCAPE_KEY = 'Escape';
 
-  var randomNumber = function (end, start) {
+  var getRandomNumber = function (end, start) {
     if (start === undefined) {
       start = 0;
     }
     return Math.floor(start + Math.random() * (end + 1 - start));
   };
 
-  var randomElement = function (array) {
-    return array[randomNumber(array.length - 1)];
+  var getRandomElement = function (array) {
+    return array[getRandomNumber(array.length - 1)];
   };
 
-  var randomUniqueSubArray = function (array, amount) {
+  var getRandomUniqueSubArray = function (array, amount) {
     var subArray = [];
     if (array.length <= amount) {
       return array;
     }
     while (subArray.length !== amount) {
-      var item = randomElement(array);
+      var item = getRandomElement(array);
       if (!subArray.includes(item)) {
         subArray.push(item);
       }
@@ -32,8 +32,8 @@
   window.utils = {
     ENTER_KEY: ENTER_KEY,
     ESCAPE_KEY: ESCAPE_KEY,
-    randomNumber: randomNumber,
-    randomElement: randomElement,
-    randomUniqueSubArray: randomUniqueSubArray
+    randomNumber: getRandomNumber,
+    randomElement: getRandomElement,
+    randomUniqueSubArray: getRandomUniqueSubArray
   };
 })();

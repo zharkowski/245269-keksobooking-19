@@ -19,6 +19,7 @@
   var avatar = form.querySelector('.ad-form-header__preview img');
   var avatarInput = form.querySelector('.ad-form__field input');
   var adPhotoInput = form.querySelector('.ad-form__input');
+  var adPhoto = form.querySelector('.ad-form__photo img');
 
   var uploadPhotoHandler = function (inputElement, imgElement) {
     var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
@@ -45,7 +46,6 @@
   });
 
   adPhotoInput.addEventListener('change', function () {
-    var adPhoto = form.querySelector('.ad-form__photo img');
     if (!adPhoto) {
       var img = document.createElement('img');
       img.src = '';
@@ -123,19 +123,28 @@
       var messageTemplate = document.querySelector('#' + messageType).content.querySelector('.' + messageType);
       var message = messageTemplate.cloneNode(true);
       document.querySelector('main').appendChild(message);
-      document.addEventListener('click', function () {
+
+      var clickHandler = function () {
         message.remove();
-      });
-      document.addEventListener('keydown', function (evt) {
+        document.removeEventListener('click', clickHandler);
+      };
+      document.addEventListener('click', clickHandler);
+
+      var keydownHandler = function (evt) {
         if (evt.key === window.utils.ESCAPE_KEY) {
           message.remove();
         }
-      });
+        document.removeEventListener('keydown', keydownHandler);
+      };
+      document.addEventListener('keydown', keydownHandler);
+
       var button = document.querySelector('.' + messageType + '__button');
       if (button) {
-        button.addEventListener('click', function () {
+        var buttonClickHandler = function () {
           message.remove();
-        });
+          button.removeEventListener('click', buttonClickHandler);
+        };
+        button.addEventListener('click', buttonClickHandler);
       }
     };
 

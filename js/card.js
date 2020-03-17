@@ -29,7 +29,7 @@
 
   var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 
-  var createPinCardElement = function (pinElement) {
+  var createElement = function (pinElement) {
     var card = cardTemplate.cloneNode(true);
 
     card.querySelector('.popup__avatar').src = pinElement.author.avatar;
@@ -44,19 +44,24 @@
     renderPhotos(card, pinElement);
 
     var closeButton = card.querySelector('.popup__close');
-    closeButton.addEventListener('click', function () {
+    var clickHandler = function () {
       card.remove();
-    });
-    document.addEventListener('keydown', function (evt) {
+      closeButton.removeEventListener('click', clickHandler);
+    };
+    closeButton.addEventListener('click', clickHandler);
+
+    var keydownHandler = function (evt) {
       if (evt.key === window.utils.ESCAPE_KEY) {
         card.remove();
+        document.removeEventListener('keydown', keydownHandler);
       }
-    });
+    };
+    document.addEventListener('keydown', keydownHandler);
 
     return card;
   };
 
   window.card = {
-    createPinCardElement: createPinCardElement
+    createElement: createElement
   };
 })();

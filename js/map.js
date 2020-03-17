@@ -6,10 +6,10 @@
   var HIGH_PRICE = 50000;
 
   var pinList = document.querySelector('.map__pins');
-  var housingType = document.querySelector('#housing-type');
-  var housingPrice = document.querySelector('#housing-price');
-  var housingRooms = document.querySelector('#housing-rooms');
-  var housingGuests = document.querySelector('#housing-guests');
+  var housingType = document.querySelector('.map__filter[name=housing-type]');
+  var housingPrice = document.querySelector('.map__filter[name=housing-price]');
+  var housingRooms = document.querySelector('.map__filter[name=housing-rooms]');
+  var housingGuests = document.querySelector('.map__filter[name=housing-guests]');
   var housingFeatures = document.querySelectorAll('.map__checkbox');
 
   var removePins = function () {
@@ -69,22 +69,11 @@
           }
         });
         return hasCheckedFeatures;
-      }).
-      filter(function (item) {
-        var housingFeaturesChecked = document.querySelectorAll('.map__checkbox:checked');
-        var hasCheckedFeatures = true;
-        housingFeaturesChecked.forEach(function (node) {
-          if (!item.offer.features.includes(node.value)) {
-            hasCheckedFeatures = false;
-            return;
-          }
-        });
-        return hasCheckedFeatures;
       });
 
     var pinsNearArray = window.utils.randomUniqueSubArray(currentPins, NEAR_PINS_AMOUNT);
     for (var i = 0; i < pinsNearArray.length; i++) {
-      fragment.appendChild(window.pin.createPinElement(pinsNearArray[i]));
+      fragment.appendChild(window.pin.createElement(pinsNearArray[i]));
     }
 
     pinList.appendChild(fragment);
@@ -130,7 +119,7 @@
   var renderCard = function (card) {
     removeCard();
     var fragment = document.createDocumentFragment();
-    fragment.appendChild(window.card.createPinCardElement(card));
+    fragment.appendChild(window.card.createElement(card));
     mapElement.insertBefore(fragment, mapFiltersContainer);
   };
 

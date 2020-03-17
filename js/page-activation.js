@@ -35,14 +35,6 @@
     adForm.reset();
   };
 
-  // var formsToggle = function () {
-  //   if (fieldsets[i].disabled) {
-  //     formsEnableHadler();
-  //   } else {
-  //     formsDisableHandler();
-  //   }
-  // };
-
   var pinDragAndDropHandler = function (evt) {
     var startCoords = {
       x: evt.clientX,

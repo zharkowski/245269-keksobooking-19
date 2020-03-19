@@ -18,7 +18,10 @@
         error = 'Пользователь не авторизован';
         break;
       case 404:
-        error = 'Ничего не найдено';
+        error = 'Ошибка подключения к серверу';
+        break;
+      case 0:
+        error = 'Отсутствует подключение к интернету';
         break;
       default:
         error = 'Cтатус ответа: ' + wrongXhr.status + ' ' + wrongXhr.statusText;
@@ -28,13 +31,7 @@
     document.body.insertAdjacentElement('afterbegin', node);
   };
 
-  var load = function (loadHandler, errorHandler) {
-    var URL = 'https://js.dump.academy/keksobooking/data';
-    var xhr = new XMLHttpRequest();
-    xhr.responseType = 'json';
-
-    xhr.open('GET', URL);
-
+  var addXhrEvents = function (xhr, loadHandler, errorHandler) {
     xhr.addEventListener('load', function () {
       try {
         loadHandler(xhr.response);
@@ -42,6 +39,25 @@
         errorHandler(xhr);
       }
     });
+
+    xhr.addEventListener('error', function () {
+      errorHandler(xhr);
+    });
+
+    xhr.timeout = 10000;
+    xhr.addEventListener('timeout', function () {
+      errorHandler(xhr);
+    });
+  };
+
+  var load = function (loadHandler, errorHandler) {
+    var URL = 'https://js.dump.academy/keksobooking/data';
+    var xhr = new XMLHttpRequest();
+    xhr.responseType = 'json';
+
+    xhr.open('GET', URL);
+
+    addXhrEvents(xhr, loadHandler, errorHandler);
 
     xhr.send();
   };
@@ -53,22 +69,7 @@
 
     xhr.open('POST', URL);
 
-    xhr.addEventListener('load', function () {
-      try {
-        loadHandler(xhr.response);
-      } catch (err) {
-        errorHandler(xhr);
-      }
-    });
-
-    xhr.addEventListener('error', function () {
-      errorHandler();
-    });
-
-    xhr.timeout = 10000;
-    xhr.addEventListener('timeout', function () {
-      errorHandler();
-    });
+    addXhrEvents(xhr, loadHandler, errorHandler);
 
     xhr.send(data);
   };

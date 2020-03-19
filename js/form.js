@@ -74,8 +74,8 @@
     rooms.setCustomValidity('');
     capacity.setCustomValidity('');
     if (+rooms.value < +capacity.value) {
-      rooms.setCustomValidity('Количесвто комнат не может быть меньше количства гостей');
-      capacity.setCustomValidity('Количесвто комнат не может быть меньше количства гостей');
+      rooms.setCustomValidity('Количество комнат не может быть меньше количества гостей');
+      capacity.setCustomValidity('Количество комнат не может быть меньше количества гостей');
     }
     if ((+rooms.value === 100 && +capacity.value !== 0) || (+rooms.value !== 100 && +capacity.value === 0)) {
       rooms.setCustomValidity('Данное количество комнат не предназначено для гостей');
@@ -165,9 +165,14 @@
     evt.preventDefault();
   });
 
-  resetButton.addEventListener('click', function () {
+  var resetFormsHandler = function () {
     form.reset();
+    price.placeholder = window.data.minPriceMap[type.value];
     filtersForm.reset();
+  };
+
+  resetButton.addEventListener('click', function () {
+    resetFormsHandler();
     window.pageActivation.deactivatePageHandler();
   });
 

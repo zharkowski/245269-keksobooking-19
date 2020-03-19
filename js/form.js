@@ -94,6 +94,9 @@
     price.setCustomValidity('');
     var minPrice = window.data.minPriceMap[offerType];
     price.placeholder = minPrice;
+    if (price.value === '') {
+      return;
+    }
     if (price.value < minPrice) {
       price.setCustomValidity('Цена для жилья типа "' + window.data.offerTypeMap[offerType] + '" не можеть быть меньше ' + minPrice + ' рублей');
     }
@@ -176,8 +179,13 @@
     window.pageActivation.deactivatePageHandler();
   });
 
+  var setValidity = function () {
+    setPriceValidity(type.value);
+    setRoomsAndCapacityValidity();
+  };
 
   window.form = {
+    setValidity: setValidity,
     setAddressCoordinates: setAddressCoordinates,
     PIN_WIDTH: PIN_WIDTH,
     PIN_HEIGHT: PIN_HEIGHT

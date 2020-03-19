@@ -13,14 +13,12 @@
 
     var clickHandler = function () {
       window.map.renderCard(pinElement);
-      pin.removeEventListener('click', clickHandler);
     };
     pin.addEventListener('click', clickHandler);
 
     var keydownHandler = function (evt) {
       if (evt.key === window.utils.ENTER_KEY) {
         window.map.renderCard(pinElement);
-        pin.removeEventListener('keydown', keydownHandler);
       }
     };
     pin.addEventListener('keydown', keydownHandler);

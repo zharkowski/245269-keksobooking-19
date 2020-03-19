@@ -93,7 +93,6 @@
     pinMain.style.top = ORIGINAL_MAIN_PIN_Y + 'px';
     map.classList.add('map--faded');
     formsDisableHandler();
-    pinMain.removeEventListener('mousedown', pinDragAndDropHandler);
     pinMain.addEventListener('mousedown', mouseDownHandler);
     pinMain.addEventListener('keydown', keyDownHandler);
   };

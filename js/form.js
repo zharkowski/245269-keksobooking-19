@@ -6,13 +6,14 @@
   var PIN_WIDTH = pinMain.offsetWidth;
   var PIN_HEIGHT = 80;
   var MAX_PRICE = 1000000;
+  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
   var filtersForm = document.querySelector('.map__filters');
   var form = document.querySelector('.ad-form');
   var resetButton = document.querySelector('.ad-form__reset');
   var rooms = document.querySelector('select[name=rooms]');
   var capacity = document.querySelector('select[name=capacity]');
-  var type = document.querySelector('select[name=type]');
+  var adType = document.querySelector('select[name=type]');
   var price = document.querySelector('input[name=price]');
   var timein = document.querySelector('select[name=timein]');
   var timeout = document.querySelector('select[name=timeout]');
@@ -22,7 +23,6 @@
   var adPhoto = form.querySelector('.ad-form__photo img');
 
   var uploadPhotoHandler = function (inputElement, imgElement) {
-    var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
     var file = inputElement.files[0];
     var fileName = file.name.toLowerCase();
 
@@ -105,12 +105,12 @@
     }
   };
 
-  type.addEventListener('change', function () {
-    setPriceValidity(type.value);
+  adType.addEventListener('change', function () {
+    setPriceValidity(adType.value);
   });
 
   price.addEventListener('change', function () {
-    setPriceValidity(type.value);
+    setPriceValidity(adType.value);
   });
 
   timein.addEventListener('change', function () {
@@ -122,8 +122,8 @@
   });
 
   var formSendHandler = function () {
-    var showMessage = function (messageType) {
-      var messageTemplate = document.querySelector('#' + messageType).content.querySelector('.' + messageType);
+    var showMessage = function (type) {
+      var messageTemplate = document.querySelector('#' + type).content.querySelector('.' + type);
       var message = messageTemplate.cloneNode(true);
       document.querySelector('main').appendChild(message);
 
@@ -134,14 +134,14 @@
       document.addEventListener('click', clickHandler);
 
       var keydownHandler = function (evt) {
-        if (evt.key === window.utils.ESCAPE_KEY) {
+        if (evt.key === window.utils.Key.ESCAPE) {
           message.remove();
         }
         document.removeEventListener('keydown', keydownHandler);
       };
       document.addEventListener('keydown', keydownHandler);
 
-      var button = document.querySelector('.' + messageType + '__button');
+      var button = document.querySelector('.' + type + '__button');
       if (button) {
         var buttonClickHandler = function () {
           message.remove();
@@ -170,7 +170,7 @@
 
   var resetFormsHandler = function () {
     form.reset();
-    price.placeholder = window.data.minPriceMap[type.value];
+    price.placeholder = window.data.minPriceMap[adType.value];
     filtersForm.reset();
   };
 
@@ -180,7 +180,7 @@
   });
 
   var setValidity = function () {
-    setPriceValidity(type.value);
+    setPriceValidity(adType.value);
     setRoomsAndCapacityValidity();
   };
 

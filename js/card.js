@@ -3,11 +3,14 @@
 (function () {
   var createPhotos = function (card, pinElement) {
     var fragment = document.createDocumentFragment();
-    for (var i = 1; i < pinElement.offer.photos.length; i++) {
-      var photo = card.querySelector('.popup__photo').cloneNode(true);
-      photo.src = pinElement.offer.photos[i];
-      fragment.appendChild(photo);
-    }
+    pinElement.offer.photos.forEach(function (photo, index) {
+      if (index === 0) {
+        return;
+      }
+      var photoNode = card.querySelector('.popup__photo').cloneNode(true);
+      photoNode.src = photo;
+      fragment.appendChild(photoNode);
+    });
     return fragment;
   };
 
@@ -51,7 +54,7 @@
     closeButton.addEventListener('click', clickHandler);
 
     var keydownHandler = function (evt) {
-      if (evt.key === window.utils.ESCAPE_KEY) {
+      if (evt.key === window.utils.Key.ESCAPE) {
         card.remove();
         document.removeEventListener('keydown', keydownHandler);
       }

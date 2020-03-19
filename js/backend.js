@@ -1,6 +1,9 @@
 'use strict';
 
 (function () {
+  var LOAD_URL = 'https://js.dump.academy/keksobooking/data';
+  var SAVE_URL = 'https://js.dump.academy/keksobooking';
+
   var commonErrorHandler = function (wrongXhr) {
     var node = document.createElement('div');
     node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
@@ -9,33 +12,17 @@
     node.style.right = '0';
     node.style.fontSize = '30px';
 
-    var error;
-    switch (wrongXhr.status) {
-      case 400:
-        error = 'Неверный запрос';
-        break;
-      case 401:
-        error = 'Пользователь не авторизован';
-        break;
-      case 404:
-        error = 'Ошибка подключения к серверу';
-        break;
-      case 0:
-        error = 'Отсутствует подключение к интернету';
-        break;
-      default:
-        error = 'Cтатус ответа: ' + wrongXhr.status + ' ' + wrongXhr.statusText;
-    }
+    var error = window.utils.CodeMessage[wrongXhr.status];
+    node.textContent = error !== undefined ? error : 'Cтатус ответа: ' + wrongXhr.status + ' ' + wrongXhr.statusText;
 
-    node.textContent = error;
     document.body.insertAdjacentElement('afterbegin', node);
   };
 
   var addXhrEvents = function (xhr, loadHandler, errorHandler) {
     xhr.addEventListener('load', function () {
-      try {
+      if (xhr.status === window.utils.StatusCode.OK) {
         loadHandler(xhr.response);
-      } catch (err) {
+      } else {
         errorHandler(xhr);
       }
     });
@@ -51,11 +38,10 @@
   };
 
   var load = function (loadHandler, errorHandler) {
-    var URL = 'https://js.dump.academy/keksobooking/data';
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
 
-    xhr.open('GET', URL);
+    xhr.open('GET', LOAD_URL);
 
     addXhrEvents(xhr, loadHandler, errorHandler);
 
@@ -63,11 +49,10 @@
   };
 
   var save = function (data, loadHandler, errorHandler) {
-    var URL = 'https://js.dump.academy/keksobooking';
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
 
-    xhr.open('POST', URL);
+    xhr.open('POST', SAVE_URL);
 
     addXhrEvents(xhr, loadHandler, errorHandler);
 

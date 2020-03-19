@@ -105,7 +105,7 @@
   };
 
   var keyDownHandler = function (evt) {
-    if (evt.key === window.utils.ENTER_KEY) {
+    if (evt.key === window.utils.Key.ENTER) {
       activatePageHandler();
     }
   };

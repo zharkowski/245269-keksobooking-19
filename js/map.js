@@ -2,10 +2,13 @@
 
 (function () {
   var NEAR_PINS_AMOUNT = 5;
-  var LOW_PRICE = 10000;
-  var HIGH_PRICE = 50000;
+  var Price = {
+    LOW_PRICE: 10000,
+    HIGH_PRICE: 50000
+  };
 
   var pinList = document.querySelector('.map__pins');
+  var filterForm = document.querySelector('.map__filters');
   var housingType = document.querySelector('.map__filter[name=housing-type]');
   var housingPrice = document.querySelector('.map__filter[name=housing-price]');
   var housingRooms = document.querySelector('.map__filter[name=housing-rooms]');
@@ -37,17 +40,17 @@
           case 'any':
             break;
           case 'middle':
-            if (price < LOW_PRICE || price > HIGH_PRICE) {
+            if (price < Price.LOW_PRICE || price > Price.HIGH_PRICE) {
               return false;
             }
             break;
           case 'low':
-            if (price > LOW_PRICE) {
+            if (price > Price.LOW_PRICE) {
               return false;
             }
             break;
           case 'high':
-            if (price < HIGH_PRICE) {
+            if (price < Price.HIGH_PRICE) {
               return false;
             }
             break;
@@ -73,7 +76,7 @@
 
     var pinsNearArray = window.utils.randomUniqueSubArray(currentPins, NEAR_PINS_AMOUNT);
     for (var i = 0; i < pinsNearArray.length; i++) {
-      fragment.appendChild(window.pin.createElement(pinsNearArray[i]));
+      fragment.appendChild(window.pin.create(pinsNearArray[i]));
     }
 
     pinList.appendChild(fragment);
@@ -84,21 +87,7 @@
     renderPins();
   });
 
-  housingType.addEventListener('change', function () {
-    renderMap();
-  });
-
-  housingPrice.addEventListener('change', function () {
-    renderMap();
-  });
-
-  housingRooms.addEventListener('change', function () {
-    renderMap();
-  });
-
-  housingGuests.addEventListener('change', function () {
-    renderMap();
-  });
+  filterForm.addEventListener('change', renderMap);
 
   housingFeatures.forEach(function (node) {
     node.addEventListener('change', function () {

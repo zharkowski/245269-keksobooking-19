@@ -1,8 +1,25 @@
 'use strict';
 
 (function () {
-  var ENTER_KEY = 'Enter';
-  var ESCAPE_KEY = 'Escape';
+  var Key = {
+    ENTER: 'Enter',
+    ESCAPE: 'Escape'
+  };
+
+  var StatusCode = {
+    OK: 200,
+    BAD_REQUEST: 400,
+    UNAUTHORIZED: 401,
+    NOT_FOUND: 404,
+    NO_CONNECTION: 0
+  };
+
+  var CodeMessage = {
+    400: 'Неверный запрос',
+    401: 'Пользователь не авторизован',
+    404: 'Ошибка подключения к серверу',
+    0: 'Отсутствует подключение к интернету'
+  };
 
   var getRandomNumber = function (end, start) {
     if (start === undefined) {
@@ -30,8 +47,9 @@
   };
 
   window.utils = {
-    ENTER_KEY: ENTER_KEY,
-    ESCAPE_KEY: ESCAPE_KEY,
+    Key: Key,
+    StatusCode: StatusCode,
+    CodeMessage: CodeMessage,
     randomNumber: getRandomNumber,
     randomElement: getRandomElement,
     randomUniqueSubArray: getRandomUniqueSubArray

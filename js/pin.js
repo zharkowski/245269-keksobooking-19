@@ -3,7 +3,7 @@
 (function () {
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
-  var createElement = function (pinElement) {
+  var create = function (pinElement) {
     var pin = pinTemplate.cloneNode(true);
 
     pin.style.left = pinElement.location.x - 20 + 'px';
@@ -17,7 +17,7 @@
     pin.addEventListener('click', clickHandler);
 
     var keydownHandler = function (evt) {
-      if (evt.key === window.utils.ENTER_KEY) {
+      if (evt.key === window.utils.Key.ENTER) {
         window.map.renderCard(pinElement);
       }
     };
@@ -27,6 +27,6 @@
   };
 
   window.pin = {
-    createElement: createElement
+    create: create
   };
 })();

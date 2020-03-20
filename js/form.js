@@ -6,21 +6,23 @@
   var PIN_WIDTH = pinMain.offsetWidth;
   var PIN_HEIGHT = 80;
   var MAX_PRICE = 1000000;
+  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
+  var filtersForm = document.querySelector('.map__filters');
   var form = document.querySelector('.ad-form');
   var resetButton = document.querySelector('.ad-form__reset');
   var rooms = document.querySelector('select[name=rooms]');
   var capacity = document.querySelector('select[name=capacity]');
-  var type = document.querySelector('select[name=type]');
+  var adType = document.querySelector('select[name=type]');
   var price = document.querySelector('input[name=price]');
   var timein = document.querySelector('select[name=timein]');
   var timeout = document.querySelector('select[name=timeout]');
   var avatar = form.querySelector('.ad-form-header__preview img');
   var avatarInput = form.querySelector('.ad-form__field input');
   var adPhotoInput = form.querySelector('.ad-form__input');
+  var adPhoto = form.querySelector('.ad-form__photo img');
 
   var uploadPhotoHandler = function (inputElement, imgElement) {
-    var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
     var file = inputElement.files[0];
     var fileName = file.name.toLowerCase();
 
@@ -44,7 +46,6 @@
   });
 
   adPhotoInput.addEventListener('change', function () {
-    var adPhoto = form.querySelector('.ad-form__photo img');
     if (!adPhoto) {
       var img = document.createElement('img');
       img.src = '';
@@ -73,8 +74,8 @@
     rooms.setCustomValidity('');
     capacity.setCustomValidity('');
     if (+rooms.value < +capacity.value) {
-      rooms.setCustomValidity('Количесвто комнат не может быть меньше количства гостей');
-      capacity.setCustomValidity('Количесвто комнат не может быть меньше количства гостей');
+      rooms.setCustomValidity('Количество комнат не может быть меньше количества гостей');
+      capacity.setCustomValidity('Количество комнат не может быть меньше количества гостей');
     }
     if ((+rooms.value === 100 && +capacity.value !== 0) || (+rooms.value !== 100 && +capacity.value === 0)) {
       rooms.setCustomValidity('Данное количество комнат не предназначено для гостей');
@@ -93,6 +94,9 @@
     price.setCustomValidity('');
     var minPrice = window.data.minPriceMap[offerType];
     price.placeholder = minPrice;
+    if (price.value === '') {
+      return;
+    }
     if (price.value < minPrice) {
       price.setCustomValidity('Цена для жилья типа "' + window.data.offerTypeMap[offerType] + '" не можеть быть меньше ' + minPrice + ' рублей');
     }
@@ -101,12 +105,12 @@
     }
   };
 
-  type.addEventListener('change', function () {
-    setPriceValidity(type.value);
+  adType.addEventListener('change', function () {
+    setPriceValidity(adType.value);
   });
 
   price.addEventListener('change', function () {
-    setPriceValidity(type.value);
+    setPriceValidity(adType.value);
   });
 
   timein.addEventListener('change', function () {
@@ -118,23 +122,32 @@
   });
 
   var formSendHandler = function () {
-    var showMessage = function (messageType) {
-      var messageTemplate = document.querySelector('#' + messageType).content.querySelector('.' + messageType);
+    var showMessage = function (type) {
+      var messageTemplate = document.querySelector('#' + type).content.querySelector('.' + type);
       var message = messageTemplate.cloneNode(true);
       document.querySelector('main').appendChild(message);
-      document.addEventListener('click', function () {
+
+      var clickHandler = function () {
         message.remove();
-      });
-      document.addEventListener('keydown', function (evt) {
-        if (evt.key === window.utils.ESCAPE_KEY) {
+        document.removeEventListener('click', clickHandler);
+      };
+      document.addEventListener('click', clickHandler);
+
+      var keydownHandler = function (evt) {
+        if (evt.key === window.utils.Key.ESCAPE) {
           message.remove();
         }
-      });
-      var button = document.querySelector('.' + messageType + '__button');
+        document.removeEventListener('keydown', keydownHandler);
+      };
+      document.addEventListener('keydown', keydownHandler);
+
+      var button = document.querySelector('.' + type + '__button');
       if (button) {
-        button.addEventListener('click', function () {
+        var buttonClickHandler = function () {
           message.remove();
-        });
+          button.removeEventListener('click', buttonClickHandler);
+        };
+        button.addEventListener('click', buttonClickHandler);
       }
     };
 
@@ -155,12 +168,24 @@
     evt.preventDefault();
   });
 
-  resetButton.addEventListener('click', function () {
+  var resetFormsHandler = function () {
     form.reset();
+    price.placeholder = window.data.minPriceMap[adType.value];
+    filtersForm.reset();
+  };
+
+  resetButton.addEventListener('click', function () {
+    resetFormsHandler();
+    window.pageActivation.deactivatePageHandler();
   });
 
+  var setValidity = function () {
+    setPriceValidity(adType.value);
+    setRoomsAndCapacityValidity();
+  };
 
   window.form = {
+    setValidity: setValidity,
     setAddressCoordinates: setAddressCoordinates,
     PIN_WIDTH: PIN_WIDTH,
     PIN_HEIGHT: PIN_HEIGHT

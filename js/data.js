@@ -1,9 +1,6 @@
 'use strict';
 
 (function () {
-  var offerTypes = ['palace', 'flat', 'house', 'bungalo'];
-  var featuresEnum = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-  var checks = ['12:00', '13:00', '14:00'];
   var offerTypeMap = {
     'palace': 'Дворец',
     'flat': 'Квартира',
@@ -18,9 +15,6 @@
   };
 
   window.data = {
-    offerTypes: offerTypes,
-    featuresEnum: featuresEnum,
-    checks: checks,
     offerTypeMap: offerTypeMap,
     minPriceMap: minPriceMap
   };

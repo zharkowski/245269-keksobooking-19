@@ -3,11 +3,14 @@
 (function () {
   var createPhotos = function (card, pinElement) {
     var fragment = document.createDocumentFragment();
-    for (var i = 1; i < pinElement.offer.photos.length; i++) {
-      var photo = card.querySelector('.popup__photo').cloneNode(true);
-      photo.src = pinElement.offer.photos[i];
-      fragment.appendChild(photo);
-    }
+    pinElement.offer.photos.forEach(function (photo, index) {
+      if (index === 0) {
+        return;
+      }
+      var photoNode = card.querySelector('.popup__photo').cloneNode(true);
+      photoNode.src = photo;
+      fragment.appendChild(photoNode);
+    });
     return fragment;
   };
 
@@ -29,7 +32,7 @@
 
   var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 
-  var createPinCardElement = function (pinElement) {
+  var createElement = function (pinElement) {
     var card = cardTemplate.cloneNode(true);
 
     card.querySelector('.popup__avatar').src = pinElement.author.avatar;
@@ -44,19 +47,24 @@
     renderPhotos(card, pinElement);
 
     var closeButton = card.querySelector('.popup__close');
-    closeButton.addEventListener('click', function () {
+    var clickHandler = function () {
       card.remove();
-    });
-    document.addEventListener('keydown', function (evt) {
-      if (evt.key === window.utils.ESCAPE_KEY) {
+      closeButton.removeEventListener('click', clickHandler);
+    };
+    closeButton.addEventListener('click', clickHandler);
+
+    var keydownHandler = function (evt) {
+      if (evt.key === window.utils.Key.ESCAPE) {
         card.remove();
+        document.removeEventListener('keydown', keydownHandler);
       }
-    });
+    };
+    document.addEventListener('keydown', keydownHandler);
 
     return card;
   };
 
   window.card = {
-    createPinCardElement: createPinCardElement
+    createElement: createElement
   };
 })();

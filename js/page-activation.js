@@ -12,36 +12,28 @@
 
   adForm.classList.add('ad-form--disabled');
   var fieldsets = document.querySelectorAll('fieldset');
-  for (var k = 0; k < fieldsets.length; k++) {
-    fieldsets[k].setAttribute('disabled', '');
-  }
+  fieldsets.forEach(function (fieldset) {
+    fieldset.setAttribute('disabled', '');
+  });
   var filtersForm = document.querySelector('.map__filters');
   filtersForm.setAttribute('disabled', '');
 
   var formsEnableHandler = function () {
-    for (var l = 0; l < fieldsets.length; l++) {
-      fieldsets[l].removeAttribute('disabled');
-    }
+    fieldsets.forEach(function (fieldset) {
+      fieldset.removeAttribute('disabled');
+    });
     filtersForm.removeAttribute('disabled');
     adForm.classList.remove('ad-form--disabled');
   };
 
   var formsDisableHandler = function () {
-    for (var i = 0; i < fieldsets.length; i++) {
-      fieldsets[i].setAttribute('disabled', '');
-    }
+    fieldsets.forEach(function (fieldset) {
+      fieldset.setAttribute('disabled', '');
+    });
     filtersForm.setAttribute('disabled', '');
     adForm.classList.add('ad-form--disabled');
     adForm.reset();
   };
-
-  // var formsToggle = function () {
-  //   if (fieldsets[i].disabled) {
-  //     formsEnableHadler();
-  //   } else {
-  //     formsDisableHandler();
-  //   }
-  // };
 
   var pinDragAndDropHandler = function (evt) {
     var startCoords = {
@@ -86,6 +78,7 @@
     map.classList.remove('map--faded');
     window.form.setAddressCoordinates(pinMain.style.left, pinMain.style.top);
     formsEnableHandler();
+    window.form.setValidity();
     pinMain.removeEventListener('mousedown', mouseDownHandler);
     pinMain.removeEventListener('keydown', keyDownHandler);
   };
@@ -101,7 +94,6 @@
     pinMain.style.top = ORIGINAL_MAIN_PIN_Y + 'px';
     map.classList.add('map--faded');
     formsDisableHandler();
-    pinMain.removeEventListener('mousedown', pinDragAndDropHandler);
     pinMain.addEventListener('mousedown', mouseDownHandler);
     pinMain.addEventListener('keydown', keyDownHandler);
   };
@@ -113,7 +105,7 @@
   };
 
   var keyDownHandler = function (evt) {
-    if (evt.key === window.utils.ENTER_KEY) {
+    if (evt.key === window.utils.Key.ENTER) {
       activatePageHandler();
     }
   };

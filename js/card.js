@@ -49,7 +49,7 @@
     var time = card.querySelector('.popup__text--time');
     var description = card.querySelector('.popup__description');
 
-    if (pinElement.author.avatar) {
+    if (!pinElement.author.avatar) {
       avatar.remove();
     } else {
       avatar.src = pinElement.author.avatar;
@@ -64,7 +64,7 @@
     } else {
       address.textContent = pinElement.offer.address;
     }
-    if (pinElement.offer.price === undefined) {
+    if (!pinElement.offer.price) {
       price.remove();
     } else {
       price.textContent = pinElement.offer.price + '₽/ночь';

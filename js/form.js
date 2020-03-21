@@ -22,7 +22,7 @@
   var adPhotoInput = form.querySelector('.ad-form__input');
   var adPhoto = form.querySelector('.ad-form__photo img');
 
-  var uploadPhotoHandler = function (inputElement, imgElement) {
+  var uploadPhoto = function (inputElement, imgElement) {
     var file = inputElement.files[0];
     var fileName = file.name.toLowerCase();
 
@@ -42,7 +42,7 @@
   };
 
   avatarInput.addEventListener('change', function () {
-    uploadPhotoHandler(avatarInput, avatar);
+    uploadPhoto(avatarInput, avatar);
   });
 
   adPhotoInput.addEventListener('change', function () {
@@ -55,7 +55,7 @@
       form.querySelector('.ad-form__photo').appendChild(img);
       adPhoto = form.querySelector('.ad-form__photo img');
     }
-    uploadPhotoHandler(adPhotoInput, adPhoto);
+    uploadPhoto(adPhotoInput, adPhoto);
   });
 
   var addressInput = document.querySelector('input[name=address]');
@@ -121,7 +121,7 @@
     timein.value = timeout.value;
   });
 
-  var formSendHandler = function () {
+  var sendForm = function () {
     var showMessage = function (type) {
       var messageTemplate = document.querySelector('#' + type).content.querySelector('.' + type);
       var message = messageTemplate.cloneNode(true);
@@ -130,6 +130,7 @@
       var clickHandler = function () {
         message.remove();
         document.removeEventListener('click', clickHandler);
+        document.removeEventListener('keydown', keydownHandler);
       };
       document.addEventListener('click', clickHandler);
 
@@ -137,6 +138,7 @@
         if (evt.key === window.utils.Key.ESCAPE) {
           message.remove();
         }
+        document.removeEventListener('click', clickHandler);
         document.removeEventListener('keydown', keydownHandler);
       };
       document.addEventListener('keydown', keydownHandler);
@@ -152,7 +154,7 @@
     };
 
     var formSaveSuccessHandler = function () {
-      window.pageActivation.deactivatePageHandler();
+      window.pageActivation.pageDeactivateHandler();
       showMessage('success');
     };
 
@@ -164,7 +166,7 @@
   };
 
   form.addEventListener('submit', function (evt) {
-    formSendHandler();
+    sendForm();
     evt.preventDefault();
   });
 
@@ -176,7 +178,7 @@
 
   resetButton.addEventListener('click', function () {
     resetFormsHandler();
-    window.pageActivation.deactivatePageHandler();
+    window.pageActivation.pageDeactivateHandler();
   });
 
   var setValidity = function () {

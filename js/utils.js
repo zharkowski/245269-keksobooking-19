@@ -33,17 +33,16 @@
   };
 
   var getRandomUniqueSubArray = function (array, amount) {
-    var subArray = [];
+    var subArrayElements = [];
     if (array.length <= amount) {
       return array;
     }
-    while (subArray.length !== amount) {
-      var item = getRandomElement(array);
-      if (!subArray.includes(item)) {
-        subArray.push(item);
-      }
+    while (subArrayElements.length !== amount) {
+      var index = getRandomNumber(array.length - 1);
+      subArrayElements.push(array[index]);
+      array.splice(index, 1);
     }
-    return subArray;
+    return subArrayElements;
   };
 
   window.utils = {
@@ -52,6 +51,6 @@
     CodeMessage: CodeMessage,
     randomNumber: getRandomNumber,
     randomElement: getRandomElement,
-    randomUniqueSubArray: getRandomUniqueSubArray
+    getRandomUniqueSubArray: getRandomUniqueSubArray
   };
 })();

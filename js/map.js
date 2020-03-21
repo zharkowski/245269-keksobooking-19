@@ -3,8 +3,8 @@
 (function () {
   var NEAR_PINS_AMOUNT = 5;
   var Price = {
-    LOW_PRICE: 10000,
-    HIGH_PRICE: 50000
+    LOW: 10000,
+    HIGH: 50000
   };
 
   var pinList = document.querySelector('.map__pins');
@@ -29,69 +29,76 @@
     var fragment = document.createDocumentFragment();
 
     var currentPins = window.pins;
-    currentPins = currentPins.
-      filter(function (item) {
-        if (housingType.value !== 'any' && item.offer.type !== housingType.value) {
-          return false;
-        }
-        var priceFilter = housingPrice.value;
-        var price = item.offer.price;
-        switch (priceFilter) {
-          case 'any':
-            break;
-          case 'middle':
-            if (price < Price.LOW_PRICE || price > Price.HIGH_PRICE) {
-              return false;
-            }
-            break;
-          case 'low':
-            if (price > Price.LOW_PRICE) {
-              return false;
-            }
-            break;
-          case 'high':
-            if (price < Price.HIGH_PRICE) {
-              return false;
-            }
-            break;
-          default:
-            return false;
-        }
-        if (housingRooms.value !== 'any' && item.offer.rooms !== +housingRooms.value) {
-          return false;
-        }
-        if (housingGuests.value !== 'any' && item.offer.guests !== +housingGuests.value) {
-          return false;
-        }
-        var housingFeaturesChecked = document.querySelectorAll('.map__checkbox:checked');
-        var hasCheckedFeatures = true;
-        housingFeaturesChecked.forEach(function (node) {
-          if (!item.offer.features.includes(node.value)) {
-            hasCheckedFeatures = false;
-            return;
+    var renderingPins = [];
+    for (var i = 0; i < currentPins.length && renderingPins.length < NEAR_PINS_AMOUNT; i++) {
+      if (housingType.value !== 'any' && currentPins[i].offer.type !== housingType.value) {
+        continue;
+      }
+      var priceFilter = housingPrice.value;
+      var price = currentPins[i].offer.price;
+      switch (priceFilter) {
+        case 'any':
+          break;
+        case 'middle':
+          if (price < Price.LOW_PRICE || price > Price.HIGH_PRICE) {
+            continue;
           }
-        });
-        return hasCheckedFeatures;
-      });
+          break;
+        case 'low':
+          if (price > Price.LOW_PRICE) {
+            continue;
+          }
+          break;
+        case 'high':
+          if (price < Price.HIGH_PRICE) {
+            continue;
+          }
+          break;
+        default:
+          continue;
+      }
+      if (housingRooms.value !== 'any' && currentPins[i].offer.rooms !== +housingRooms.value) {
+        continue;
+      }
+      if (housingGuests.value !== 'any' && currentPins[i].offer.guests !== +housingGuests.value) {
+        continue;
+      }
+      var housingCheckedFeatures = document.querySelectorAll('.map__checkbox:checked');
+      var isFeatureSuited = true;
+      for (var k = 0; k < housingCheckedFeatures.length && isFeatureSuited; k++) {
+        if (!currentPins[i].offer.features.includes(housingCheckedFeatures[k].value)) {
+          isFeatureSuited = false;
+          break;
+        }
+      }
+      if (!isFeatureSuited) {
+        continue;
+      }
 
-    var pinsNearArray = window.utils.randomUniqueSubArray(currentPins, NEAR_PINS_AMOUNT);
-    for (var i = 0; i < pinsNearArray.length; i++) {
-      fragment.appendChild(window.pin.create(pinsNearArray[i]));
+      renderingPins.push(currentPins[i]);
+    }
+
+    var nearPins = window.utils.getRandomUniqueSubArray(renderingPins, NEAR_PINS_AMOUNT);
+    nearPins.forEach(function (pin) {
+      fragment.appendChild(window.pin.create(pin));
+    });
+    for (var j = 0; j < nearPins.length; j++) {
+      fragment.appendChild(window.pin.create(nearPins[j]));
     }
 
     pinList.appendChild(fragment);
   };
 
-  var renderMap = window.debounce(function () {
+  var mapRenderHandler = window.debounce(function () {
     removeCard();
     renderPins();
   });
 
-  filterForm.addEventListener('change', renderMap);
+  filterForm.addEventListener('change', mapRenderHandler);
 
   housingFeatures.forEach(function (node) {
     node.addEventListener('change', function () {
-      renderMap();
+      mapRenderHandler();
     });
   });
 
@@ -101,6 +108,9 @@
   var removeCard = function () {
     var currentCard = mapElement.querySelector('.map__card');
     if (currentCard) {
+      document.querySelector('.map__pin--active').classList.remove('map__pin--active');
+      currentCard.removeEventListener('click', window.card.clickHandler);
+      currentCard.removeEventListener('click', window.card.keydownHandler);
       currentCard.remove();
     }
   };

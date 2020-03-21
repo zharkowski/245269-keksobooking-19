@@ -19,14 +19,20 @@
     for (var i = 0; i < featuresElements.length; i++) {
       featuresElements[i].style.display = 'none';
     }
-    for (var j = 0; j < pinElement.offer.features.length; j++) {
-      card.querySelector('.popup__feature--' + pinElement.offer.features[j]).style.display = 'inline-block';
+    if (pinElement.offer.features.length !== 0) {
+      for (var j = 0; j < pinElement.offer.features.length; j++) {
+        card.querySelector('.popup__feature--' + pinElement.offer.features[j]).style.display = 'inline-block';
+      }
     }
   };
 
   var renderPhotos = function (card, pinElement) {
-    card.querySelector('.popup__photo').src = pinElement.offer.photos[0];
     var photosListElement = card.querySelector('.popup__photos');
+    if (pinElement.offer.photos.length === 0) {
+      photosListElement.remove();
+      return;
+    }
+    card.querySelector('.popup__photo').src = pinElement.offer.photos[0];
     photosListElement.appendChild(createPhotos(card, pinElement));
   };
 
@@ -34,32 +40,80 @@
 
   var createElement = function (pinElement) {
     var card = cardTemplate.cloneNode(true);
+    var avatar = card.querySelector('.popup__avatar');
+    var title = card.querySelector('.popup__title');
+    var address = card.querySelector('.popup__text--address');
+    var price = card.querySelector('.popup__text--price');
+    var type = card.querySelector('.popup__type');
+    var capacity = card.querySelector('.popup__text--capacity');
+    var time = card.querySelector('.popup__text--time');
+    var description = card.querySelector('.popup__description');
 
-    card.querySelector('.popup__avatar').src = pinElement.author.avatar;
-    card.querySelector('.popup__title').textContent = pinElement.offer.title;
-    card.querySelector('.popup__text--address').textContent = pinElement.offer.address;
-    card.querySelector('.popup__text--price').textContent = pinElement.offer.price + '₽/ночь';
-    card.querySelector('.popup__type').textContent = window.data.offerTypeMap[pinElement.offer.type];
-    card.querySelector('.popup__text--capacity').textContent = pinElement.offer.rooms + ' комнаты для ' + pinElement.offer.guests + ' гостей';
-    card.querySelector('.popup__text--time').textContent = 'Заезд после ' + pinElement.offer.checkin + ', выезд до ' + pinElement.offer.checkout;
+    if (pinElement.author.avatar) {
+      avatar.remove();
+    } else {
+      avatar.src = pinElement.author.avatar;
+    }
+    if (!pinElement.offer.title) {
+      title.remove();
+    } else {
+      title.textContent = pinElement.offer.title;
+    }
+    if (!pinElement.offer.address) {
+      address.remove();
+    } else {
+      address.textContent = pinElement.offer.address;
+    }
+    if (pinElement.offer.price === undefined) {
+      price.remove();
+    } else {
+      price.textContent = pinElement.offer.price + '₽/ночь';
+    }
+    if (!window.data.offerTypeMap[pinElement.offer.type]) {
+      type.remove();
+    } else {
+      type.textContent = window.data.offerTypeMap[pinElement.offer.type];
+    }
+    if (!pinElement.offer.guests || !pinElement.offer.rooms) {
+      capacity.remove();
+    } else {
+      capacity.textContent = pinElement.offer.guests === 0 ?
+        'Не для гостей' :
+        pinElement.offer.rooms + ' комнаты для ' + pinElement.offer.guests + ' гостей';
+    }
+    if (!pinElement.offer.checkin || !pinElement.offer.checkout) {
+      time.remove();
+    } else {
+      time.textContent = 'Заезд после ' + pinElement.offer.checkin + ', выезд до ' + pinElement.offer.checkout;
+    }
+
     renderFeatures(card, pinElement);
-    card.querySelector('.popup__description').textContent = pinElement.offer.description;
+
+    if (!pinElement.offer.description) {
+      description.remove();
+    } else {
+      description.textContent = pinElement.offer.description;
+    }
     renderPhotos(card, pinElement);
 
     var closeButton = card.querySelector('.popup__close');
     var clickHandler = function () {
       card.remove();
+      document.querySelector('.map__pin--active').classList.remove('map__pin--active');
       closeButton.removeEventListener('click', clickHandler);
     };
     closeButton.addEventListener('click', clickHandler);
+    window.card.clickHandler = clickHandler;
 
     var keydownHandler = function (evt) {
       if (evt.key === window.utils.Key.ESCAPE) {
         card.remove();
+        document.querySelector('.map__pin--active').classList.remove('map__pin--active');
         document.removeEventListener('keydown', keydownHandler);
       }
     };
     document.addEventListener('keydown', keydownHandler);
+    window.card.keydownHandler = keydownHandler;
 
     return card;
   };

@@ -66,7 +66,7 @@
     } else {
       address.textContent = pinElement.offer.address;
     }
-    if (!pinElement.offer.price) {
+    if (pinElement.offer.price === undefined) {
       price.remove();
     } else {
       price.textContent = pinElement.offer.price + '₽/ночь';

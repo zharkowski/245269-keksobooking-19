@@ -103,6 +103,7 @@
       card.remove();
       document.querySelector('.map__pin--active').classList.remove('map__pin--active');
       closeButton.removeEventListener('click', clickHandler);
+      document.removeEventListener('keydown', keydownHandler);
     };
     closeButton.addEventListener('click', clickHandler);
     window.card.clickHandler = clickHandler;
@@ -111,6 +112,7 @@
       if (evt.key === window.utils.Key.ESCAPE) {
         card.remove();
         document.querySelector('.map__pin--active').classList.remove('map__pin--active');
+        closeButton.removeEventListener('click', clickHandler);
         document.removeEventListener('keydown', keydownHandler);
       }
     };

@@ -40,17 +40,17 @@
         case 'any':
           break;
         case 'middle':
-          if (price < Price.LOW_PRICE || price > Price.HIGH_PRICE) {
+          if (price < Price.LOW || price > Price.HIGH) {
             continue;
           }
           break;
         case 'low':
-          if (price > Price.LOW_PRICE) {
+          if (price > Price.LOW) {
             continue;
           }
           break;
         case 'high':
-          if (price < Price.HIGH_PRICE) {
+          if (price < Price.HIGH) {
             continue;
           }
           break;
@@ -82,9 +82,6 @@
     nearPins.forEach(function (pin) {
       fragment.appendChild(window.pin.create(pin));
     });
-    for (var j = 0; j < nearPins.length; j++) {
-      fragment.appendChild(window.pin.create(nearPins[j]));
-    }
 
     pinList.appendChild(fragment);
   };

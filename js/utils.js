@@ -28,19 +28,19 @@
     return Math.floor(start + Math.random() * (end + 1 - start));
   };
 
-  var getRandomElement = function (array) {
-    return array[getRandomNumber(array.length - 1)];
+  var getRandomElement = function (arrayElements) {
+    return arrayElements[getRandomNumber(arrayElements.length - 1)];
   };
 
-  var getRandomUniqueSubArray = function (array, amount) {
+  var getRandomUniqueElements = function (arrayElements, amount) {
     var subArrayElements = [];
-    if (array.length <= amount) {
-      return array;
+    if (arrayElements.length <= amount) {
+      return arrayElements;
     }
     while (subArrayElements.length !== amount) {
-      var index = getRandomNumber(array.length - 1);
-      subArrayElements.push(array[index]);
-      array.splice(index, 1);
+      var index = getRandomNumber(arrayElements.length - 1);
+      subArrayElements.push(arrayElements[index]);
+      arrayElements.splice(index, 1);
     }
     return subArrayElements;
   };
@@ -51,6 +51,6 @@
     CodeMessage: CodeMessage,
     randomNumber: getRandomNumber,
     randomElement: getRandomElement,
-    getRandomUniqueSubArray: getRandomUniqueSubArray
+    getRandomUniqueElements: getRandomUniqueElements
   };
 })();

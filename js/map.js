@@ -78,7 +78,7 @@
       renderingPins.push(currentPins[i]);
     }
 
-    var nearPins = window.utils.getRandomUniqueSubArray(renderingPins, NEAR_PINS_AMOUNT);
+    var nearPins = window.utils.getRandomUniqueElements(renderingPins, NEAR_PINS_AMOUNT);
     nearPins.forEach(function (pin) {
       fragment.appendChild(window.pin.create(pin));
     });

@@ -76,7 +76,7 @@
     } else {
       type.textContent = window.data.offerTypeMap[pinElement.offer.type];
     }
-    if (!pinElement.offer.guests || !pinElement.offer.rooms) {
+    if (pinElement.offer.guests === undefined || pinElement.offer.rooms === undefined) {
       capacity.remove();
     } else {
       capacity.textContent = pinElement.offer.guests === 0 ?

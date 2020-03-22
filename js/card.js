@@ -15,14 +15,16 @@
   };
 
   var renderFeatures = function (card, pinElement) {
+    if (pinElement.offer.features.length === 0) {
+      var featuresList = card.querySelector('.popup__features');
+      featuresList.remove();
+    }
     var featuresElements = card.querySelectorAll('.popup__feature');
     for (var i = 0; i < featuresElements.length; i++) {
       featuresElements[i].style.display = 'none';
     }
-    if (pinElement.offer.features.length !== 0) {
-      for (var j = 0; j < pinElement.offer.features.length; j++) {
-        card.querySelector('.popup__feature--' + pinElement.offer.features[j]).style.display = 'inline-block';
-      }
+    for (var j = 0; j < pinElement.offer.features.length; j++) {
+      card.querySelector('.popup__feature--' + pinElement.offer.features[j]).style.display = 'inline-block';
     }
   };
 

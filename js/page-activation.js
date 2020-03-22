@@ -16,13 +16,15 @@
     fieldset.setAttribute('disabled', '');
   });
   var filtersForm = document.querySelector('.map__filters');
-  filtersForm.setAttribute('disabled', '');
+  var filters = filtersForm.querySelectorAll('select, input');
+  filters.forEach(function (filter) {
+    filter.setAttribute('disabled', '');
+  });
 
   var formsEnableHandler = function () {
     fieldsets.forEach(function (fieldset) {
       fieldset.removeAttribute('disabled');
     });
-    filtersForm.removeAttribute('disabled');
     adForm.classList.remove('ad-form--disabled');
   };
 
@@ -75,6 +77,9 @@
   var loadSuccessHandler = function (data) {
     window.pins = data;
     window.map.renderPins();
+    filters.forEach(function (filter) {
+      filter.removeAttribute('disabled');
+    });
   };
 
   var pageActivateHandler = function () {
